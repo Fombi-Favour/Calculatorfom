@@ -2,16 +2,24 @@ package application;
 
 
 import javafx.application.Application;
-import javafx.geometry.Insets;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import java.math.BigDecimal;
 
 
 public class Main extends Application {
+
+    private boolean inputFieldDisplayed;
+    private String operator;
+    private BigDecimal left;
+    private BigDecimal right;
 
 
     public static void main(String[] args){
@@ -23,13 +31,23 @@ public class Main extends Application {
 
         final int SCREEN_WIDTH = 250;
 
+
         TextField inputField = new TextField();
         TextField answerField = new TextField();
 
         Button btn = new Button("C"); btn.setPrefWidth((double) SCREEN_WIDTH/4);
+        btn.setOnAction(actionEvent -> {
+            inputField.clear();
+        });
         Button btn0 = new Button("÷"); btn0.setPrefWidth((double) SCREEN_WIDTH/4);
         Button btn1 = new Button("×"); btn1.setPrefWidth((double) SCREEN_WIDTH/4);
         Button btn2 = new Button("<-"); btn2.setPrefWidth((double) SCREEN_WIDTH/4);
+        btn2.setOnAction(actionEvent -> {
+            String currentText = inputField.getText();
+            if(!currentText.isEmpty() && !inputFieldDisplayed){
+                inputField.setText(currentText.substring(0, currentText.length() - 1));
+            }
+        });
 
         HBox hbox = new HBox(btn, btn0, btn1, btn2);
 
@@ -51,6 +69,13 @@ public class Main extends Application {
         Button button4 = new Button("2"); button4.setPrefWidth((double) SCREEN_WIDTH/4);
         Button button5 = new Button("3"); button5.setPrefWidth((double) SCREEN_WIDTH/4);
         Button button6 = new Button("="); button6.setPrefWidth((double) SCREEN_WIDTH/4);
+        button6.setStyle("-fx-color: green");
+        button6.setOnAction(actionEvent -> {
+           double setAnswer = Double.parseDouble(answerField.getText());
+
+
+        });
+        button6.setDefaultButton(true);
 
         HBox hbox2 = new HBox(button3, button4, button5, button6);
 
@@ -68,8 +93,9 @@ public class Main extends Application {
 
         VBox mainPane = new VBox();
         mainPane.getChildren().addAll(textPane, linePane);
+        mainPane.setStyle("-fx-color: black");
 
-        Button[] allButtons = new Button[] {btn, btn0, btn1, btn2, btn3, btn4, btn5, btn6, button, button0, button1, button2,button3, button4, button5, button6, cop, cop0, cop1};
+        Button[] allButtons = new Button[] {btn0, btn1, btn3, btn4, btn5, btn6, button, button0, button1, button2, button3, button4, button5, cop, cop0, cop1};
 
         for(Button eachButton : allButtons){
             eachButton.setOnAction(actionEvent -> {
@@ -79,6 +105,7 @@ public class Main extends Application {
         }
 
         Scene mainScene = new Scene(mainPane);
+        mainScene.setFill(Color.rgb(1,1,1,1));
 
 
         stage.setTitle("Calculator FX");
@@ -86,5 +113,21 @@ public class Main extends Application {
         stage.setHeight(400);
         stage.setScene(mainScene);
         stage.show();
+    }
+
+    public static BigDecimal calculate(String operator,BigDecimal left, BigDecimal right){
+
+        switch (operator){
+            case "+":
+                return left.add(right);
+            case  "-":
+                return left.subtract(right);
+            case "×":
+                return left.multiply(right);
+            case"÷":
+                return left.divide(right);
+            default:
+        }
+        return right;
     }
 }
